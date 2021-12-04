@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    consul:
+      host: discovery
+      port: 8500
+      discovery:
+        instanceId: ${spring.application.name}:${random.value}
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: Auth
+          uri: http://auth:8080
+          predicates:
+            - Path=/api/auth/**
+        - id: frontend
+          uri: http://frontend:3000
+          predicates:
+            - Path=/**
