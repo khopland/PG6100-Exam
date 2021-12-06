@@ -31,15 +31,16 @@ class WebSecurityConfig(
         http.exceptionHandling().authenticationEntryPoint { _, response, _ ->
             response.setHeader("WWW-Authenticate", "cookie")
             response.sendError(401)
-        }.and().logout().logoutUrl("/api/auth/logout")
+        }.and()
+            .logout().logoutUrl("/api/auth/logout")
             .logoutSuccessHandler((HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT)))
-            .and().authorizeRequests()
+        .and().authorizeRequests()
             .antMatchers("/api/auth/user").authenticated()
             .antMatchers("/api/auth/signUp").permitAll()
             .antMatchers("/api/auth/login").permitAll()
             .antMatchers("/api/auth/logout").permitAll()
             .anyRequest().denyAll()
-            .and().csrf().disable().sessionManagement()
+        .and().csrf().disable().sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
     }
 

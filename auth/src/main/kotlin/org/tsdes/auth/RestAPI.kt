@@ -4,6 +4,8 @@ import org.springframework.amqp.core.FanoutExchange
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -27,6 +29,7 @@ class RestAPI(
     private val rabbit: RabbitTemplate,
     private val fanout: FanoutExchange
 ) {
+    val logger: Logger = LoggerFactory.getLogger(RestAPI::class.java)
 
     @RequestMapping("/user")
     fun user(user: Principal): ResponseEntity<Map<String, Any>> {
@@ -57,6 +60,7 @@ class RestAPI(
 
         rabbit.convertAndSend(fanout.name, "", userId)
 
+        logger.info("Created User[username=$userId]")
         return ResponseEntity.status(201).build()
     }
 
@@ -80,6 +84,7 @@ class RestAPI(
 
         if (token.isAuthenticated) {
             SecurityContextHolder.getContext().authentication = token
+            logger.info("Logged in User[username=$userId]")
             return ResponseEntity.status(204).build()
         }
 

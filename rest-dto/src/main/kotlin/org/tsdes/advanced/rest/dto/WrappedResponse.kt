@@ -48,14 +48,13 @@ open class WrappedResponse<T>(
                 else -> throw  IllegalStateException("Invalid HTTP code: $code")
             }
         } else {
-            val wrongSuccess = (status == ResponseStatus.SUCCESS && c !in 100..399)
-            val wrongError = (status == ResponseStatus.ERROR && c !in 400..499)
-            val wrongFail = (status == ResponseStatus.FAIL && c !in 500..599)
-
-            val wrong = wrongSuccess || wrongError || wrongFail
-            if (wrong) {
-                throw IllegalArgumentException("Status $status is not correct for HTTP code $c")
+            val wrong = when (code) {
+                in 100..399 -> (status == ResponseStatus.SUCCESS)
+                in 400..499 -> (status == ResponseStatus.ERROR)
+                in 500..599 -> (status == ResponseStatus.FAIL)
+                else -> throw IllegalStateException("Invalid HTTP status code: $code")
             }
+            if (wrong) throw IllegalArgumentException("Status $status is not correct for HTTP code $c")  
         }
 
         if (status != ResponseStatus.SUCCESS && message == null) {
