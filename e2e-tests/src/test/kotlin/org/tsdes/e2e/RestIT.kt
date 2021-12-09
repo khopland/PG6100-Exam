@@ -52,7 +52,9 @@ class RestIT {
                         .port(env.getServicePort("discovery", 8500))
                         .get("/v1/agent/services")
                         .then()
-                        .body("size()", CoreMatchers.equalTo(5))
+                        .statusCode(200)
+                        // add the number of services here
+                        .body("size()", CoreMatchers.equalTo(1))
                     true
                 }
         }
@@ -63,6 +65,7 @@ class RestIT {
             env.stop()
         }
     }
+
     @Test
     fun testCreateUser() {
         Awaitility.await().atMost(120, TimeUnit.SECONDS)
@@ -80,6 +83,10 @@ class RestIT {
                     .header("Set-Cookie", CoreMatchers.not(CoreMatchers.equalTo(null)))
                     .extract().cookie("SESSION")
 
+                    given().cookie("SESSION", cookie)
+                    .get("/api/auth/user")
+                    .then()
+                    .statusCode(200)
                 true
             }
     }

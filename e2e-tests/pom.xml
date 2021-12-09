@@ -24,24 +24,14 @@
 
     <dependencies>
         <!-- Force this module to be built last -->
-        <!-- <dependency>
-            <groupId>org.tsdes</groupId>
-            <artifactId>cards</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.tsdes</groupId>
-            <artifactId>scores</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.tsdes</groupId>
-            <artifactId>user-collections</artifactId>
-            <version>${project.version}</version>
-        </dependency> -->
         <dependency>
             <groupId>org.tsdes</groupId>
             <artifactId>api-gateway</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tsdes</groupId>
+            <artifactId>auth</artifactId>
             <version>${project.version}</version>
         </dependency>
 
