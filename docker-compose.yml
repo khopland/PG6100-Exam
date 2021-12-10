@@ -35,3 +35,10 @@ services:
       - redis
       - postgres-auth
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - api-gateway
+
