@@ -53,8 +53,8 @@ class SecurityTest @Autowired constructor(private val userRepository: UserReposi
                 TestPropertyValues.of(
                     "spring.redis.host=${redis.containerIpAddress}",
                     "spring.redis.port=${redis.getMappedPort(6379)}",
-                    "spring.rabbitmq.host=" + rabbitMQ.containerIpAddress,
-                    "spring.rabbitmq.port=" + rabbitMQ.getMappedPort(5672)
+                    "spring.rabbitmq.host=${rabbitMQ.containerIpAddress}",
+                    "spring.rabbitmq.port=${rabbitMQ.getMappedPort(5672)}"
                 ).applyTo(configurableApplicationContext.environment)
         }
     }
