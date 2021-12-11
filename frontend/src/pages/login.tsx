@@ -1,15 +1,17 @@
-import { useState } from "react";
-import  Container  from "react-bootstrap/esm/Container";
+import { useContext, useState } from "react";
+import Container from "react-bootstrap/esm/Container";
 import Button from "react-bootstrap/esm/Button";
 import Form from "react-bootstrap/esm/Form";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { login } from "../service/userService";
+import { userContext } from "../context/userContext";
 
 export const Login = () => {
+  const { refresh } = useContext(userContext);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
 
   function validateForm() {
     return email.length > 0 && password.length > 0;
@@ -17,12 +19,13 @@ export const Login = () => {
 
   async function handleSubmit(event: any) {
     event.preventDefault();
-    const res = await axios.post("/api/auth/login",{"userId":email,"password":password})
-    if (res.status ===204){
-      console.log("logged in")
-      navigate("/",{replace: true})
+    if (await login(email, password)) {
+      console.log("logged in");
+      await refresh();
+      navigate("/", { replace: true });
     }
   }
+
   return (
     <Container className="Login" style={{ padding: "60px 0" }}>
       <Form onSubmit={handleSubmit}>
@@ -33,7 +36,6 @@ export const Login = () => {
           <Form.Label>Email</Form.Label>
           <Form.Control
             autoFocus
-            type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -54,7 +56,7 @@ export const Login = () => {
             justifyContent: "center",
             display: "flex",
             alignItems: "center",
-            paddingTop:"1rem"
+            paddingTop: "1rem",
           }}
         >
           <Button size="lg" type="submit" disabled={!validateForm()}>

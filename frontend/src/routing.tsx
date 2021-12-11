@@ -4,6 +4,7 @@ import { Admin } from "./pages/admin";
 import { Login } from "./pages/login";
 import { Main } from "./pages/main";
 import { Signup } from "./pages/signup";
+import { Logout } from "./pages/Logout";
 
 export const Routing = () => {
   return (
@@ -14,6 +15,7 @@ export const Routing = () => {
         <Route path="login" element={<Login />} />
         <Route path="admin" element={<Admin />} />
         <Route path="signup" element={<Signup />} />
+        <Route path="logout" element={<Logout />} />
       </Routes>
     </BrowserRouter>
   );

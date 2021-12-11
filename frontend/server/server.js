@@ -17,7 +17,7 @@ if (process.env.DEV) {
 app.use(express.static(path.resolve(__dirname, "..", "dist")));
 
 //handling 404
-app.use((req, res, next) => {
+app.use((req, res, _) => {
   res.sendFile(path.resolve(__dirname, "..", "dist", "index.html"));
 });
 

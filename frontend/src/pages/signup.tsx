@@ -1,26 +1,30 @@
-import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Button from "react-bootstrap/esm/Button";
 import Container from "react-bootstrap/esm/Container";
 import Form from "react-bootstrap/esm/Form";
 import { useNavigate } from "react-router-dom";
+import { singUp } from "../service/userService";
+import { userContext } from "../context/userContext";
 
 export const Signup = () => {
+  const { refresh } = useContext(userContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [checkPassword, setCheckPassword] = useState("");
   const navigate = useNavigate();
 
   function validateForm() {
-    return email.length > 0 && password.length > 0 && checkPassword === password;
+    return (
+      email.length > 0 && password.length > 0 && checkPassword === password
+    );
   }
 
   async function handleSubmit(event: any) {
     event.preventDefault();
-    const res = await axios.post("/api/auth/signUp",{"userId":email,"password":password})
-    if (res.status ===201){
-      console.log("signed up")
-      navigate("/",{replace: true})
+    if (await singUp(email, password)) {
+      console.log("singed up");
+      await refresh();
+      navigate("/", { replace: true });
     }
   }
   return (
@@ -33,7 +37,6 @@ export const Signup = () => {
           <Form.Label>Email</Form.Label>
           <Form.Control
             autoFocus
-            type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -65,7 +68,7 @@ export const Signup = () => {
             justifyContent: "center",
             display: "flex",
             alignItems: "center",
-            paddingTop:"1rem"
+            paddingTop: "1rem",
           }}
         >
           <Button size="lg" type="submit" disabled={!validateForm()}>
@@ -73,5 +76,6 @@ export const Signup = () => {
           </Button>
         </div>
       </Form>
-    </Container>)
+    </Container>
+  );
 };
