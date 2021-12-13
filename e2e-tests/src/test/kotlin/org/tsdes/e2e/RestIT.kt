@@ -4,7 +4,6 @@ import io.restassured.RestAssured.*
 import io.restassured.http.ContentType
 import org.awaitility.Awaitility
 import org.hamcrest.CoreMatchers
-import org.hamcrest.Matchers
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Disabled
@@ -83,7 +82,7 @@ class RestIT {
                     .header("Set-Cookie", CoreMatchers.not(CoreMatchers.equalTo(null)))
                     .extract().cookie("SESSION")
 
-                    given().cookie("SESSION", cookie)
+                given().cookie("SESSION", cookie)
                     .get("/api/auth/user")
                     .then()
                     .statusCode(200)

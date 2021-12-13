@@ -1,9 +1,9 @@
 package org.tsdes.auth
 
-import org.tsdes.auth.db.UserService
-import org.tsdes.auth.db.UserRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
+import org.tsdes.auth.db.UserRepository
+import org.tsdes.auth.db.UserService
 
 @Component
 class InitialDataLoader(

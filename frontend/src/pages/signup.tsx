@@ -27,6 +27,7 @@ export const Signup = () => {
       navigate("/", { replace: true });
     }
   }
+
   return (
     <Container className="Login" style={{ padding: "60px 0" }}>
       <Form onSubmit={handleSubmit}>

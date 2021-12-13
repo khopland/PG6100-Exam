@@ -54,7 +54,7 @@ open class WrappedResponse<T>(
                 in 500..599 -> (status == ResponseStatus.FAIL)
                 else -> throw IllegalStateException("Invalid HTTP status code: $code")
             }
-            if (wrong) throw IllegalArgumentException("Status $status is not correct for HTTP code $c")  
+            if (wrong) throw IllegalArgumentException("Status $status is not correct for HTTP code $c")
         }
 
         if (status != ResponseStatus.SUCCESS && message == null) {
