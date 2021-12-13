@@ -20,11 +20,13 @@
 ## Commands:
 * `mvn clean install -DskipTests`
     * Install all maven and npm dependency and builds the services.
+* `mvn clean verify`
+    * to run all tests.
 * `docker compose build`
     * Build all the docker images
-* `docker compose up`
+* `docker compose up --build`
     * Starts all docker images
-* `docker compose up -d && npm run dev --prefix frontend`
+* `docker compose up -d --build && npm run dev --prefix frontend`
     * Starts all docker images and runs frontend localy on http://localhost:3000
 
 
