@@ -15,6 +15,7 @@
         <module>api-gateway</module>
         <module>e2e-tests</module>
         <module>auth</module>
+        <module>frontend</module>
     </modules>
 
     <properties>
