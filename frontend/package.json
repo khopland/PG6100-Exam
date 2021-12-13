@@ -6,11 +6,10 @@
     "dev": "cross-env DEV=true concurrently \"npm run watch:client\" \"npm run watch:server\"",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "start": "cd server && npm start",
+    "start": "npm start --prefix server",
     "watch:client": "vite build --watch",
     "watch:server": "npm run dev --prefix server",
-    "format": "prettier --write .",
-    "install:server": "cd server && npm install"
+    "format": "prettier --write ."
   },
   "dependencies": {
     "axios": "^0.24.0",
