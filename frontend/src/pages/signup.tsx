@@ -8,20 +8,20 @@ import { userContext } from "../context/userContext";
 
 export const Signup = () => {
   const { refresh } = useContext(userContext);
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [checkPassword, setCheckPassword] = useState("");
   const navigate = useNavigate();
 
   function validateForm() {
     return (
-      email.length > 0 && password.length > 0 && checkPassword === password
+      username.length > 0 && password.length > 0 && checkPassword === password
     );
   }
 
   async function handleSubmit(event: any) {
     event.preventDefault();
-    if (await singUp(email, password)) {
+    if (await singUp(username, password)) {
       console.log("singed up");
       await refresh();
       navigate("/", { replace: true });
@@ -34,11 +34,11 @@ export const Signup = () => {
           style={{ margin: "0 auto", maxWidth: "320px" }}
           controlId="email"
         >
-          <Form.Label>Email</Form.Label>
+          <Form.Label>Username</Form.Label>
           <Form.Control
             autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </Form.Group>
         <Form.Group

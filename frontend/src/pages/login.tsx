@@ -8,18 +8,17 @@ import { userContext } from "../context/userContext";
 
 export const Login = () => {
   const { refresh } = useContext(userContext);
-
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   function validateForm() {
-    return email.length > 0 && password.length > 0;
+    return username.length > 0 && password.length > 0;
   }
 
   async function handleSubmit(event: any) {
     event.preventDefault();
-    if (await login(email, password)) {
+    if (await login(username, password)) {
       console.log("logged in");
       await refresh();
       navigate("/", { replace: true });
@@ -33,11 +32,11 @@ export const Login = () => {
           style={{ margin: "0 auto", maxWidth: "320px" }}
           controlId="email"
         >
-          <Form.Label>Email</Form.Label>
+          <Form.Label>Username</Form.Label>
           <Form.Control
             autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </Form.Group>
         <Form.Group
