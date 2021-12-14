@@ -26,14 +26,56 @@ services:
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
 
+  postgres-boat:
+    image: 'postgres:10'
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+  postgres-port:
+    image: 'postgres:10'
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
   auth:
     build:
       context: ./auth
       dockerfile: Dockerfile
     depends_on:
+      - discovery
       - api-gateway
       - redis
       - postgres-auth
+      - rabbitmq
+
+  boat_0:
+    build:
+      context: ./boat
+      dockerfile: Dockerfile
+    depends_on:
+      - discovery
+      - api-gateway
+      - redis
+      - postgres-boat
+
+  boat_1:
+    build:
+      context: ./boat
+      dockerfile: Dockerfile
+    depends_on:
+      - discovery
+      - api-gateway
+      - redis
+      - postgres-boat
+
+  port:
+    build:
+      context: ./port
+      dockerfile: Dockerfile
+    depends_on:
+      - discovery
+      - api-gateway
+      - redis
+      - postgres-port
 
   frontend:
     build:

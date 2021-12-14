@@ -16,6 +16,15 @@ spring:
           uri: http://auth:8080
           predicates:
             - Path=/api/auth/**
+        - id: Port
+          uri: lb://port-service
+          predicates:
+            - Path=/api/port*/**
+        - id: Boat
+          uri: lb://boat-service
+          predicates:
+            - Path=/api/boat*/**
+
         - id: frontend
           uri: http://frontend:3000
           predicates:
