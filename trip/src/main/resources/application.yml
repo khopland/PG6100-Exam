@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: trip-service
+  datasource:
+    url: "jdbc:postgresql://postgres-Trip:5432/postgres"
+    username: "postgres"
+    password: ""
+    driver-class-name: org.postgresql.Driver
+  rabbitmq:
+    host: rabbitmq
+  redis:
+    host: redis
+    port: 6379
+  session:
+    store-type: redis
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: validate
+  mvc:
+    throwExceptionIfNoHandlerFound: true
+  cloud:
+    consul:
+      host: discovery
+      port: 8500
+      discovery:
+        instanceId: ${spring.application.name}:${random.value}
+  web:
+    resources:
+      add-mappings: false
+
+apiServiceAddress: "api-gateway:8080"

@@ -19,6 +19,7 @@
         <module>boat</module>
         <module>dto</module>
         <module>frontend</module>
+        <module>trip</module>
     </modules>
 
     <properties>
