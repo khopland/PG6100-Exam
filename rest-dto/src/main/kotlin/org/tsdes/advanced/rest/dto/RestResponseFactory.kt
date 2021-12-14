@@ -30,10 +30,10 @@ object RestResponseFactory {
         )
     }
 
-    fun noPayload(httpCode: Int): ResponseEntity<WrappedResponse<Void>> {
+    fun <T> noPayload(httpCode: Int): ResponseEntity<WrappedResponse<T>> {
 
         return ResponseEntity.status(httpCode).body(
-            WrappedResponse<Void>(code = httpCode).validated()
+            WrappedResponse<T>(code = httpCode).validated()
         )
     }
 
