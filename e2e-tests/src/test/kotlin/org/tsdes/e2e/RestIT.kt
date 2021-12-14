@@ -30,19 +30,23 @@ class RestIT {
 
         @Container
         @JvmField
-        val env: KDockerComposeContainer = KDockerComposeContainer("E2E", File("../docker-compose.yml"))
+        val env: KDockerComposeContainer = KDockerComposeContainer("exam", File("../docker-compose.yml"))
             .withExposedService(
                 "discovery", 8500,
                 Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(300))
             )
             .withLogConsumer("auth") { print("[auth] " + it.utf8String) }
+            .withLogConsumer("port") { print("[port] " + it.utf8String) }
+            .withLogConsumer("boat_0") { print("[boat_0] " + it.utf8String) }
+            .withLogConsumer("boat_1") { print("[boat_1] " + it.utf8String) }
+
             .withLocalCompose(true)
 
         @BeforeAll
         @JvmStatic
         fun waitForServers() {
 
-            Awaitility.await().atMost(240, TimeUnit.SECONDS)
+            Awaitility.await().atMost(360, TimeUnit.SECONDS)
                 .pollDelay(Duration.ofSeconds(20))
                 .pollInterval(Duration.ofSeconds(10))
                 .ignoreExceptions()
@@ -53,7 +57,7 @@ class RestIT {
                         .then()
                         .statusCode(200)
                         // add the number of services here
-                        .body("size()", CoreMatchers.equalTo(1))
+                        .body("size()", CoreMatchers.equalTo(5))
                     true
                 }
         }

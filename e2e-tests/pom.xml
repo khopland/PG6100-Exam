@@ -34,6 +34,17 @@
             <artifactId>auth</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.tsdes</groupId>
+            <artifactId>port</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tsdes</groupId>
+            <artifactId>boat</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
 
 
         <!-- tests -->

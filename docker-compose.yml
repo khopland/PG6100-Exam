@@ -41,7 +41,6 @@ services:
       context: ./auth
       dockerfile: Dockerfile
     depends_on:
-      - discovery
       - api-gateway
       - redis
       - postgres-auth
@@ -52,7 +51,6 @@ services:
       context: ./boat
       dockerfile: Dockerfile
     depends_on:
-      - discovery
       - api-gateway
       - redis
       - postgres-boat
@@ -62,7 +60,6 @@ services:
       context: ./boat
       dockerfile: Dockerfile
     depends_on:
-      - discovery
       - api-gateway
       - redis
       - postgres-boat
@@ -72,7 +69,6 @@ services:
       context: ./port
       dockerfile: Dockerfile
     depends_on:
-      - discovery
       - api-gateway
       - redis
       - postgres-port
@@ -83,4 +79,3 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - api-gateway
-
