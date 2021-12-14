@@ -16,6 +16,7 @@
         <module>e2e-tests</module>
         <module>auth</module>
         <module>port</module>
+        <module>boat</module>
         <module>frontend</module>
     </modules>
 
