@@ -1,6 +1,6 @@
 package org.tsdes.port.db
 
-import org.tsdes.port.PortDto
+import org.tsdes.dto.PortDto
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -17,6 +17,7 @@ class Port(
     @get:NotBlank(message = "port must have a whether")
     var weather: String = ""
 )
+
 fun Port.toDto(): PortDto {
     return PortDto(id, name, weather)
 }

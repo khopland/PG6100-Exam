@@ -1,6 +1,6 @@
 package org.tsdes.boat.db
 
-import org.tsdes.boat.BoatDto
+import org.tsdes.dto.BoatDto
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType

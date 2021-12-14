@@ -11,6 +11,7 @@ import org.tsdes.advanced.rest.dto.PageDto
 import org.tsdes.advanced.rest.dto.RestResponseFactory
 import org.tsdes.advanced.rest.dto.WrappedResponse
 import org.tsdes.boat.db.toDto
+import org.tsdes.dto.BoatDto
 import java.net.URI
 import java.util.concurrent.TimeUnit
 

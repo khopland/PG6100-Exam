@@ -17,6 +17,7 @@
         <module>auth</module>
         <module>port</module>
         <module>boat</module>
+        <module>dto</module>
         <module>frontend</module>
     </modules>
 
