@@ -22,6 +22,11 @@ class PortService(
 
     fun getById(id: Long): Port? = repository.findById(id).orElse(null)
 
+    fun updateWhether(id: Long, whether: String) {
+        val port = repository.findById(id).get().apply { this.weather = whether }
+        repository.save(port)
+    }
+
     fun getNextPage(size: Int, keysetId: Long? = null): List<Port> = when {
         size < 1 || size > 1000 -> throw IllegalArgumentException("Invalid size value: $size")
 

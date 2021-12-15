@@ -125,4 +125,11 @@ class BoatService(
         verifyBoats()
         return boats.any { x -> x.id == id }
     }
+
+    fun validateBoat(id: Long,passenger :Int): Boolean {
+        verifyBoats()
+        if (!boatExist(id)) return false
+        val boat = boats.first { x -> x.id == id }
+        return passenger >= boat.minPassengers && passenger <= boat.maxPassengers
+    }
 }

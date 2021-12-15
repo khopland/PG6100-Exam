@@ -55,7 +55,7 @@ internal class RestAPITest @Autowired constructor(
 
     @Test
     fun testGetBoat() {
-        val id = service.registerNewBoat("test", "batty", 2).id
+        val id = service.registerNewBoat("test", "batty", 2, 10, 1).id
 
         given()
             .get("/$id")
@@ -67,7 +67,7 @@ internal class RestAPITest @Autowired constructor(
     fun testCreateBoat() {
         given().auth().basic("admin", "admin")
             .contentType(ContentType.JSON)
-            .body("""{"name": "test", "builder": "colorLine", "numberOfCrew": 2}""".trimIndent())
+            .body("""{"name": "test", "builder": "colorLine", "numberOfCrew": 2,"maxPassengers":10,"minPassengers":2}""".trimIndent())
             .post("/")
             .then()
             .statusCode(201)
@@ -77,7 +77,7 @@ internal class RestAPITest @Autowired constructor(
     fun testUpdateBoat() {
         val id: String = given().auth().basic("admin", "admin")
             .contentType(ContentType.JSON)
-            .body("""{"name": "test", "builder": "colorLine", "numberOfCrew": 2}""".trimIndent())
+            .body("""{"name": "test", "builder": "colorLine", "numberOfCrew": 2,"maxPassengers":10,"minPassengers":2}""".trimIndent())
             .post("/")
             .then()
             .statusCode(201).extract().header("location").split('/').last()
@@ -89,14 +89,14 @@ internal class RestAPITest @Autowired constructor(
 
         given().auth().basic("admin", "admin")
             .contentType(ContentType.JSON)
-            .body("""{"name": "test", "builder": "colorLine", "numberOfCrew": 2}""".trimIndent())
+            .body("""{"name": "test", "builder": "colorLine", "numberOfCrew": 2,"maxPassengers":10,"minPassengers":2}""".trimIndent())
             .put("/$id")
             .then()
             .statusCode(400)
 
         given().auth().basic("admin", "admin")
             .contentType(ContentType.JSON)
-            .body("""{"id": $id, "name": "test", "builder": "colorLine", "numberOfCrew": 2}""".trimIndent())
+            .body("""{"id": $id, "name": "test", "builder": "colorLine", "numberOfCrew": 2,"maxPassengers":10,"minPassengers":2}""".trimIndent())
             .put("/$id")
             .then()
             .statusCode(204)
@@ -111,7 +111,7 @@ internal class RestAPITest @Autowired constructor(
 
     @Test
     fun testPaging() {
-        service.registerNewBoat("test_", "batty", 2)
+        service.registerNewBoat("test_", "batty", 2, 10, 1)
         given()
             .get("/")
             .then()

@@ -7,7 +7,7 @@ object FakeData {
     fun getBoatDTO(): List<BoatDto> {
 
         return MutableList(10) { index ->
-            BoatDto(index.toLong(), "Boat_$index", "ColorLine", index * 2)
+            BoatDto(index.toLong(), "Boat_$index", "ColorLine", index * 2,10,1)
         }
     }
 

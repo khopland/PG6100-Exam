@@ -112,7 +112,7 @@ internal class RestAPITest @Autowired constructor(
     @Test
     fun testGetTrip() {
         val id = "foo"
-        val trip = tripService.createTrip(id, 0, 1, 0)
+        val trip = tripService.createTrip(id, 0, 1, 0,5)
         assert(trip != null)
         given().auth().basic(id, "123")
             .get("/${trip!!.id}").then().statusCode(200)
@@ -128,6 +128,7 @@ internal class RestAPITest @Autowired constructor(
               "boat": 0,
               "departure": 0,
               "destination": 1,
+              "passengers": 5,
               "userId": "$id"
             }
         """.trimIndent()
@@ -146,6 +147,7 @@ internal class RestAPITest @Autowired constructor(
               "boat": 0,
               "departure": 0,
               "destination": 1,
+              "passengers": 5,
               "userId": "$id+sss"
             }
         """.trimIndent()
@@ -160,7 +162,7 @@ internal class RestAPITest @Autowired constructor(
 
         given().auth().basic(id, "123")
             .get("/").then().statusCode(200)
-            .body("data.list.size()", Matchers.greaterThanOrEqualTo(0))
+            .body("data.list.size()", Matchers.greaterThan(0))
     }
 
 }

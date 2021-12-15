@@ -68,7 +68,8 @@ class RestAPI(
         if (dto.userId != username)
             return RestResponseFactory.userFailure("userId in body is not your Id")
 
-        val trip = tripService.createTrip(dto) ?: return RestResponseFactory.userFailure("cant find Boat or Port")
+        val trip = tripService.createTrip(dto)
+            ?: return RestResponseFactory.userFailure("cant find Boat or Port, or not right amount of passengers")
         return RestResponseFactory.created(URI.create("api/trip/${trip.id}"))
 
     }

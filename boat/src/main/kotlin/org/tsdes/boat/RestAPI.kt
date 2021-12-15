@@ -39,7 +39,8 @@ class RestAPI(
         @ApiParam("Dto of New Boat")
         @RequestBody dto: BoatDto
     ): ResponseEntity<WrappedResponse<Void>> {
-        val port = portService.registerNewBoat(dto.name, dto.builder, dto.numberOfCrew)
+        val port =
+            portService.registerNewBoat(dto.name, dto.builder, dto.numberOfCrew, dto.maxPassengers, dto.minPassengers)
         // Return path to the created Trip
         return RestResponseFactory.created(URI.create("api/port/${port.id}"))
     }
@@ -52,10 +53,10 @@ class RestAPI(
         @ApiParam("Dto of New Boat")
         @RequestBody dto: BoatDto
     ): ResponseEntity<WrappedResponse<Void>> {
-        if (id != dto.id){
+        if (id != dto.id) {
             return RestResponseFactory.userFailure("id in path and in body dont match, $id")
         }
-        if (!portService.updateBoat(dto)){
+        if (!portService.updateBoat(dto)) {
             return RestResponseFactory.userFailure("boat with id = $id dose not exist")
         }
         return RestResponseFactory.noPayload(204)

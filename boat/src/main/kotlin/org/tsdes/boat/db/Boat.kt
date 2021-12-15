@@ -19,6 +19,10 @@ class Boat(
     var builder: String = "",
     @get:Min(1)
     var numberOfCrew: Int = 0,
+    @get:Min(1)
+    var maxPassengers: Int = 0,
+    @get:Min(1)
+    var minPassengers: Int = 0
 )
 
-fun Boat.toDto(): BoatDto = BoatDto(id, name, builder, numberOfCrew)
+fun Boat.toDto(): BoatDto = BoatDto(id, name, builder, numberOfCrew,maxPassengers,minPassengers)

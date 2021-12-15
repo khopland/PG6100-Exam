@@ -18,15 +18,16 @@ class BoatService(
     private val repository: BoatRepository,
     private val em: EntityManager
 ) {
-    fun registerNewBoat(name: String, builder: String, numberOfCrew: Int): Boat =
-        repository.save(Boat(0, name, builder, numberOfCrew))
+    fun registerNewBoat(name: String, builder: String, numberOfCrew: Int, max: Int, min: Int): Boat =
+        repository.save(Boat(0, name, builder, numberOfCrew, max, min))
 
-    fun updateBoat(dto: BoatDto): Boolean = updateBoat(dto.id!!, dto.name, dto.builder, dto.numberOfCrew)
+    fun updateBoat(dto: BoatDto): Boolean =
+        updateBoat(dto.id!!, dto.name, dto.builder, dto.numberOfCrew, dto.maxPassengers, dto.minPassengers)
 
-    fun updateBoat(id: Long, name: String, builder: String, numberOfCrew: Int): Boolean {
+    fun updateBoat(id: Long, name: String, builder: String, numberOfCrew: Int, max: Int, min: Int): Boolean {
         return if (!repository.existsById(id)) false
         else {
-            repository.save(Boat(id, name, builder, numberOfCrew))
+            repository.save(Boat(id, name, builder, numberOfCrew, max, min))
             true
         }
 

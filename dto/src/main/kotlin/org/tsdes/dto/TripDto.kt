@@ -2,7 +2,7 @@ package org.tsdes.dto
 
 import io.swagger.annotations.ApiModelProperty
 
-class TripDto (
+class TripDto(
     @get:ApiModelProperty("The ID of the Trip")
     var id: Long? = null,
 
@@ -17,4 +17,7 @@ class TripDto (
 
     @get:ApiModelProperty("The Boat of the Trip")
     var boat: Long? = null,
+
+    @get:ApiModelProperty("The Boat of the Trip")
+    var passengers: Int = 0,
 )

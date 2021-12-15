@@ -53,23 +53,24 @@ internal class TripServiceTest @Autowired constructor(
 
     @Test
     fun testCreateTrip() {
-        assertNull(tripService.createTrip("foo", 11, 1, 0))
-        assertNull(tripService.createTrip("foo", 0, 1, 11))
-        assertNotNull(tripService.createTrip("foo", 0, 1, 0))
+        assertNull(tripService.createTrip("foo", 11, 1, 0,5))
+        assertNull(tripService.createTrip("foo", 0, 1, 11,5))
+        assertNull(tripService.createTrip("foo", 0, 1, 1,11))
+        assertNotNull(tripService.createTrip("foo", 0, 1, 0,5))
         assertTrue(tripRepository.count() == 1L)
     }
 
     @Test
     fun testFailedCreateTrip() {
-        assertNull(tripService.createTrip("foo", 11, 1, 0))
-        assertNull(tripService.createTrip("foo", 0, 1, 11))
+        assertNull(tripService.createTrip("foo", 11, 1, 0,5))
+        assertNull(tripService.createTrip("foo", 0, 1, 11,5))
         assertTrue(tripRepository.count() == 0L)
     }
     @Test
     fun testPage() {
         val n = 5
         for (i in 0 until n)
-            tripService.createTrip("foo", 0, 1, 0)
+            tripService.createTrip("foo", 0, 1, 0,5)
         val page = tripService.getNextPage("foo",n)
         assertEquals(n, page.size)
         for (i in 0 until n - 1)

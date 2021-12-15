@@ -16,15 +16,17 @@ class TripService(
     private val em: EntityManager
 ) {
     fun createTrip(tripDto: TripDto): Trip? =
-        createTrip(tripDto.userId, tripDto.departure!!, tripDto.destination!!, tripDto.boat!!)
+        createTrip(tripDto.userId, tripDto.departure!!, tripDto.destination!!, tripDto.boat!!, tripDto.passengers)
 
-    fun createTrip(userId: String, departure: Long, destination: Long, boat: Long): Trip? {
+    fun createTrip(userId: String, departure: Long, destination: Long, boat: Long, passenger: Int): Trip? {
         if (
-            !boatService.boatExist(boat) ||
-            !portService.portExist(departure) ||
-            !portService.portExist(destination)
-        ) return null
-        return tripRepository.save(Trip(0, userId, departure, destination, boat))
+            boatService.validateBoat(boat, passenger) &&
+            portService.portExist(departure) &&
+            portService.portExist(destination)
+        )
+            return tripRepository.save(Trip(0, userId, departure, destination, boat, passenger))
+
+        return null
     }
 
     fun getNextPage(userId: String, size: Int, keysetId: Long? = null): List<Trip> = when {
