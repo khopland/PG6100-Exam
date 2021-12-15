@@ -3,7 +3,6 @@ package org.tsdes.port
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
-import org.slf4j.LoggerFactory
 import org.springframework.http.CacheControl
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
