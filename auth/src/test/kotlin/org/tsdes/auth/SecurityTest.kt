@@ -8,6 +8,7 @@ import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.contains
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -56,6 +57,13 @@ class SecurityTest @Autowired constructor(private val userRepository: UserReposi
                     "spring.rabbitmq.host=${rabbitMQ.containerIpAddress}",
                     "spring.rabbitmq.port=${rabbitMQ.getMappedPort(5672)}"
                 ).applyTo(configurableApplicationContext.environment)
+        }
+
+        @AfterAll
+        @JvmStatic
+        fun after() {
+            rabbitMQ.stop()
+            redis.stop()
         }
     }
 
