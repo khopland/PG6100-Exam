@@ -10,5 +10,5 @@
 );*/
 
 
-INSERT INTO trip (id, user_id, boat, departure, destination, passengers)
-VALUES (1, 'admin', 0, 1, 0, 5)
+INSERT INTO trip (id, user_id, boat, departure, destination, passengers,status)
+VALUES (1, 'admin', 0, 1, 0, 5,'Booked')

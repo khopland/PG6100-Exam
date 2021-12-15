@@ -20,4 +20,7 @@ class TripDto(
 
     @get:ApiModelProperty("The Boat of the Trip")
     var passengers: Int = 0,
+
+    @get:ApiModelProperty("The status of the Trip")
+    var status: String = "",
 )

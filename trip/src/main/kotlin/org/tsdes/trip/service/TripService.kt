@@ -16,18 +16,39 @@ class TripService(
     private val em: EntityManager
 ) {
     fun createTrip(tripDto: TripDto): Trip? =
-        createTrip(tripDto.userId, tripDto.departure!!, tripDto.destination!!, tripDto.boat!!, tripDto.passengers)
+        createTrip(
+            tripDto.userId,
+            tripDto.departure!!,
+            tripDto.destination!!,
+            tripDto.boat!!,
+            tripDto.passengers,
+            tripDto.status
+        )
 
-    fun createTrip(userId: String, departure: Long, destination: Long, boat: Long, passenger: Int): Trip? {
+    fun createTrip(
+        userId: String,
+        departure: Long,
+        destination: Long,
+        boat: Long,
+        passenger: Int,
+        status: String
+    ): Trip? {
         if (
             boatService.validateBoat(boat, passenger) &&
             portService.portExist(departure) &&
             portService.portExist(destination)
         )
-            return tripRepository.save(Trip(0, userId, departure, destination, boat, passenger))
+            return tripRepository.save(Trip(0, userId, departure, destination, boat, passenger, status))
 
         return null
     }
+
+    fun deleteTrip(id: Long, userId: String): Boolean {
+        if (tripRepository.findById(id).orElseGet(null)?.userId != userId) return false
+        tripRepository.deleteById(id)
+        return true
+    }
+
 
     fun getNextPage(userId: String, size: Int, keysetId: Long? = null): List<Trip> = when {
         size < 1 || size > 1000 -> throw IllegalArgumentException("Invalid size value: $size")
@@ -40,7 +61,7 @@ class TripService(
             else -> em.createQuery(
                 "select p from Trip p where p.id<?1 and p.userId =?2 order by p.id DESC",
                 Trip::class.java
-            ).let { it.setParameter(1, keysetId);it.setParameter(2, keysetId); it.setMaxResults(size) }.resultList
+            ).let { it.setParameter(1, keysetId);it.setParameter(2, userId); it.setMaxResults(size) }.resultList
         }
     }
 

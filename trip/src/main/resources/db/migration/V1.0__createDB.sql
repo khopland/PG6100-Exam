@@ -6,5 +6,6 @@ create table trip
     departure   bigint  not null,
     destination bigint  not null,
     passengers  integer not null check (passengers >= 1),
+    status     varchar(255),
     primary key (id)
 );

@@ -28,7 +28,9 @@ class Trip(
     var boat: Long? = null,
 
     @get:Min(1)
-    var passengers: Int = 0
+    var passengers: Int = 0 ,
+    @get:NotBlank
+    var status: String = ""
 ) {
-    fun toDto(): TripDto = TripDto(id, userId, departure, destination, boat, passengers)
+    fun toDto(): TripDto = TripDto(id, userId, departure, destination, boat, passengers,status)
 }

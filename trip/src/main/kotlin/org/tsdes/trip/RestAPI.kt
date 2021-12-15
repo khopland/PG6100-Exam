@@ -56,7 +56,6 @@ class RestAPI(
             .status(200)
             .cacheControl(CacheControl.maxAge(30, TimeUnit.SECONDS).cachePrivate())
             .body(WrappedResponse(200, page).validated())
-
     }
 
     @ApiOperation("create a Trip")
@@ -71,6 +70,18 @@ class RestAPI(
         val trip = tripService.createTrip(dto)
             ?: return RestResponseFactory.userFailure("cant find Boat or Port, or not right amount of passengers")
         return RestResponseFactory.created(URI.create("api/trip/${trip.id}"))
+
+    }
+
+    @ApiOperation("delete a Trip")
+    @DeleteMapping("/{tripId}")
+    fun deleteTrip(
+        @PathVariable("tripId") tripId: Long
+    ): ResponseEntity<WrappedResponse<Void>> {
+        val username = getUser() ?: return RestResponseFactory.noPayload(401)
+
+        if (!tripService.deleteTrip(tripId,username)) return RestResponseFactory.notFound("no trip on id = $tripId")
+        return RestResponseFactory.noPayload(204)
 
     }
 

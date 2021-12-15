@@ -9,6 +9,7 @@ import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -104,6 +105,7 @@ internal class RestAPITest @Autowired constructor(
         given().get("/$id").then().statusCode(401)
         given().post("/$id").then().statusCode(401)
         given().patch("/$id").then().statusCode(401)
+        given().delete("/$id").then().statusCode(401)
 
         given().auth().basic("bar", "123")
             .get("/$id").then().statusCode(404)
@@ -112,7 +114,7 @@ internal class RestAPITest @Autowired constructor(
     @Test
     fun testGetTrip() {
         val id = "foo"
-        val trip = tripService.createTrip(id, 0, 1, 0,5)
+        val trip = tripService.createTrip(id, 0, 1, 0, 5,"Booked")
         assert(trip != null)
         given().auth().basic(id, "123")
             .get("/${trip!!.id}").then().statusCode(200)
@@ -129,6 +131,7 @@ internal class RestAPITest @Autowired constructor(
               "departure": 0,
               "destination": 1,
               "passengers": 5,
+              "status":"Booked",
               "userId": "$id"
             }
         """.trimIndent()
@@ -148,6 +151,14 @@ internal class RestAPITest @Autowired constructor(
               "departure": 0,
               "destination": 1,
               "passengers": 5,
+              "status":"Booked",
+              "userId": "$id+sss"
+            } {
+              "boat": 0,
+              "departure": 0,
+              "destination": 1,
+              "passengers": 5,
+              "status":"Booked",
               "userId": "$id+sss"
             }
         """.trimIndent()
@@ -163,6 +174,30 @@ internal class RestAPITest @Autowired constructor(
         given().auth().basic(id, "123")
             .get("/").then().statusCode(200)
             .body("data.list.size()", Matchers.greaterThan(0))
+    }
+
+    @Test
+    fun testDeleteYourTrips() {
+        val id = "foo"
+
+        val tripId = given().auth().basic(id, "123").contentType(ContentType.JSON).body(
+            """
+            {
+              "boat": 0,
+              "departure": 0,
+              "destination": 1,
+              "passengers": 5,
+              "userId": "$id",
+              "status":"Booked"
+            }
+        """.trimIndent()
+        ).post("/").then().statusCode(201)
+            .extract().header("location").split("/").last()
+        assertTrue(tripRepository.existsById(tripId.toLong()))
+
+        given().auth().basic(id, "123").delete("/$tripId").then().statusCode(204)
+        assertFalse(tripRepository.existsById(tripId.toLong()))
+
     }
 
 }
