@@ -35,7 +35,7 @@ class RestAPI(
 
     @PostMapping
     @ApiOperation("Create a new Port")
-    fun createTrip(
+    fun createPort(
         @ApiParam("Name of New Port")
         @RequestBody dto: PortDto
     ): ResponseEntity<WrappedResponse<Void>> {
@@ -43,9 +43,10 @@ class RestAPI(
         // Return path to the created Trip
         return RestResponseFactory.created(URI.create("api/port/${port.id}"))
     }
-    @ApiOperation("Return an iterable page of ports")
+
+    @ApiOperation("Return an page of ports")
     @GetMapping
-    fun getAllTrips(
+    fun getAllPorts(
         @RequestParam("keysetId", required = false)
         keysetId: Long?
     ): ResponseEntity<WrappedResponse<PageDto<PortDto>>> {
@@ -60,5 +61,16 @@ class RestAPI(
             .status(200)
             .cacheControl(CacheControl.maxAge(1, TimeUnit.MINUTES).cachePublic())
             .body(WrappedResponse(200, page).validated())
+    }
+
+    @ApiOperation("updates Weather of a Port")
+    @PatchMapping("/{id}")
+    fun updateWeather(
+        @PathVariable("id") id: Long,
+        @RequestBody dto: WeatherDto
+    ): ResponseEntity<WrappedResponse<Void>> {
+        if (portService.updateWhether(id, dto.Weather!!))
+            return RestResponseFactory.notFound("no port on this id $id")
+        return RestResponseFactory.noPayload(204)
     }
 }
