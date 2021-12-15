@@ -116,6 +116,6 @@ internal class RestAPITest @Autowired constructor(
             .get("/")
             .then()
             .statusCode(200)
-            .body("data.list.size()", Matchers.greaterThanOrEqualTo(0))
+            .body("data.list.size()", Matchers.greaterThan(0))
     }
 }

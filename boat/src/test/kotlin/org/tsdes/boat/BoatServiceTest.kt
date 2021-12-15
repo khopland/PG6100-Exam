@@ -1,6 +1,8 @@
 package org.tsdes.boat
 
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,6 +18,10 @@ class BoatServiceTest @Autowired constructor(
     private val service: BoatService,
     private val repository: BoatRepository
 ) {
+    @BeforeEach
+    fun init(){
+        repository.deleteAll()
+    }
     @Test
     fun testInit() {
         assertTrue(repository.count() == 0L)
