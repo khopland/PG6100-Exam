@@ -60,19 +60,19 @@ class BoatService(
                     object : ParameterizedTypeReference<WrappedResponse<BoatDto>>() {})
             },
             {
-                log.error("Failed to fetch data from Card Service: ${it.message}")
+                log.error("Failed to fetch data from Boat Service: ${it.message}")
                 null
             }
         ) ?: return
         if (response.statusCodeValue != 200) log.error(
-            "Error in fetching data from boat Service. Status ${response.statusCodeValue}. Message:${response.body?.message}"
+            "Error in fetching data from Boat Service. Status ${response.statusCodeValue}. Message:${response.body?.message}"
         ) else
             try {
                 val index = boats.indexOfFirst { x -> x.id == id }
                 boats[index] = response.body!!.data!!
 
             } catch (e: Exception) {
-                log.error("Failed to parse card collection info: ${e.message}")
+                log.error("Failed to parse Boat info: ${e.message}")
             }
     }
 
@@ -104,10 +104,13 @@ class BoatService(
         ) else
             try {
                 if (response.body!!.data!!.next != null)
-                    fetchData(URI(response.body!!.data!!.next!!))
+                    fetchData(
+                        UriComponentsBuilder.fromUriString("http://${boatServiceAddress.trim()}${response.body!!.data!!.next!!}")
+                            .build().toUri()
+                    )
                 boats.addAll(response.body!!.data!!.list)
             } catch (e: Exception) {
-                log.error("Failed to parse card collection info: ${e.message}")
+                log.error("Failed to parse Boat info: ${e.message}")
             }
     }
 
@@ -126,7 +129,7 @@ class BoatService(
         return boats.any { x -> x.id == id }
     }
 
-    fun validateBoat(id: Long,passenger :Int): Boolean {
+    fun validateBoat(id: Long, passenger: Int): Boolean {
         verifyBoats()
         if (!boatExist(id)) return false
         val boat = boats.first { x -> x.id == id }

@@ -37,7 +37,7 @@ class PortService(
 
     @PostConstruct
     fun init() {
-        cb = circuitBreakerFactory.create("circuitBreakerToBoats")
+        cb = circuitBreakerFactory.create("circuitBreakerToPorts")
 
         synchronized(lock) {
             if (ports.isNotEmpty()) {
@@ -60,23 +60,23 @@ class PortService(
                     object : ParameterizedTypeReference<WrappedResponse<PortDto>>() {})
             },
             {
-                log.error("Failed to fetch data from Card Service: ${it.message}")
+                log.error("Failed to fetch data from Port Service: ${it.message}")
                 null
             }
         ) ?: return
         if (response.statusCodeValue != 200) log.error(
-            "Error in fetching data from boat Service. Status ${response.statusCodeValue}. Message:${response.body?.message}"
+            "Error in fetching data from Port Service. Status ${response.statusCodeValue}. Message:${response.body?.message}"
         ) else
             try {
                 val index = ports.indexOfFirst { x -> x.id == id }
                 ports[index] = response.body!!.data!!
 
             } catch (e: Exception) {
-                log.error("Failed to parse card collection info: ${e.message}")
+                log.error("Failed to parse Port info: ${e.message}")
             }
     }
 
-     protected fun fetchData() {
+    protected fun fetchData() {
 
         val uri = UriComponentsBuilder
             .fromUriString("http://${portServiceAddress.trim()}/api/port")
@@ -85,7 +85,7 @@ class PortService(
     }
 
 
-     protected fun fetchData(uri: URI) {
+    protected fun fetchData(uri: URI) {
         val response = cb.run(
             {
                 client.exchange(
@@ -95,19 +95,22 @@ class PortService(
                     object : ParameterizedTypeReference<WrappedResponse<PageDto<PortDto>>>() {})
             },
             {
-                log.error("Failed to fetch data from Boat Service: ${it.message}")
+                log.error("Failed to fetch data from Port Service: ${it.message}")
                 null
             }
         ) ?: return
         if (response.statusCodeValue != 200) log.error(
-            "Error in fetching data from Boat Service. Status ${response.statusCodeValue}. Message:${response.body?.message}"
+            "Error in fetching data from Port Service. Status ${response.statusCodeValue}. Message:${response.body?.message}"
         ) else
             try {
                 if (response.body!!.data!!.next != null)
-                    fetchData(URI(response.body!!.data!!.next!!))
+                    fetchData(
+                        UriComponentsBuilder.fromUriString("http://${portServiceAddress.trim()}${response.body!!.data!!.next!!}")
+                            .build().toUri()
+                    )
                 ports.addAll(response.body!!.data!!.list)
             } catch (e: Exception) {
-                log.error("Failed to parse card collection info: ${e.message}")
+                log.error("Failed to parse Port collection info: ${e.message}")
             }
     }
 
