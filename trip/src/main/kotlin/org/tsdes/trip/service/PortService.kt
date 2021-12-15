@@ -25,7 +25,7 @@ class PortService(
         private val log = LoggerFactory.getLogger(PortService::class.java)
     }
 
-    private var ports: MutableList<PortDto> = mutableListOf()
+    protected var ports: MutableList<PortDto> = mutableListOf()
 
     @Value("\${apiServiceAddress}")
     private lateinit var portServiceAddress: String
@@ -76,7 +76,7 @@ class PortService(
             }
     }
 
-    private fun fetchData() {
+     protected fun fetchData() {
 
         val uri = UriComponentsBuilder
             .fromUriString("http://${portServiceAddress.trim()}/api/port")
@@ -85,7 +85,7 @@ class PortService(
     }
 
 
-    private fun fetchData(uri: URI) {
+     protected fun fetchData(uri: URI) {
         val response = cb.run(
             {
                 client.exchange(
@@ -121,20 +121,8 @@ class PortService(
         }
     }
 
-    fun getPortById(id: Long): PortDto? {
-        verifyPorts()
-        return ports.firstOrNull { x -> x.id == id }
-    }
-
     fun portExist(id: Long): Boolean {
         verifyPorts()
         return ports.any { x -> x.id == id }
     }
-
-    fun getPortList(): List<PortDto> {
-        verifyPorts()
-        return ports.toList()
-    }
-
-
 }

@@ -55,7 +55,7 @@ class RestAPI(
             list = (portService.getNextPage(amount, keysetId).map { it.toDto() })
         }
         if (page.list.size == amount)
-            page.next = "/api/scores?keysetId=${page.list.last().id}"
+            page.next = "/api/port?keysetId=${page.list.last().id}"
         return ResponseEntity
             .status(200)
             .cacheControl(CacheControl.maxAge(1, TimeUnit.MINUTES).cachePublic())

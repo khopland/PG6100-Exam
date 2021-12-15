@@ -24,6 +24,10 @@ spring:
           uri: lb://boat-service
           predicates:
             - Path=/api/boat*/**
+        - id: trip
+          uri: lb://trip-service
+          predicates:
+            - Path=/api/trips*/**
 
         - id: frontend
           uri: http://frontend:3000

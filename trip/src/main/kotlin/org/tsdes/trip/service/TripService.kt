@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import org.tsdes.dto.TripDto
 import org.tsdes.trip.db.Trip
 import org.tsdes.trip.db.TripRepository
-import org.tsdes.trip.dto.FullTripDto
+import javax.persistence.EntityManager
 import javax.transaction.Transactional
 
 @Service
@@ -12,37 +12,37 @@ import javax.transaction.Transactional
 class TripService(
     private val tripRepository: TripRepository,
     private val boatService: BoatService,
-    private val portService: PortService
+    private val portService: PortService,
+    private val em: EntityManager
 ) {
-    fun createTrip(tripDto: TripDto): Trip =
+    fun createTrip(tripDto: TripDto): Trip? =
         createTrip(tripDto.userId, tripDto.departure!!, tripDto.destination!!, tripDto.boat!!)
 
-    fun createTrip(userId: String, departure: Long, destination: Long, boat: Long): Trip {
+    fun createTrip(userId: String, departure: Long, destination: Long, boat: Long): Trip? {
         if (
             !boatService.boatExist(boat) ||
             !portService.portExist(departure) ||
             !portService.portExist(destination)
-        ) throw IllegalStateException("Card service is not initialized")
+        ) return null
         return tripRepository.save(Trip(0, userId, departure, destination, boat))
     }
 
-    fun getTripsByUserId(userId: String): List<Trip> {
-        return tripRepository.findByUserId(userId)
+    fun getNextPage(userId: String, size: Int, keysetId: Long? = null): List<Trip> = when {
+        size < 1 || size > 1000 -> throw IllegalArgumentException("Invalid size value: $size")
+
+        else -> when (keysetId) {
+            null -> em.createQuery(
+                "select t from Trip t where t.userId =?1 order by t.id DESC",
+                Trip::class.java
+            ).setParameter(1, userId).apply { maxResults = size }.resultList
+            else -> em.createQuery(
+                "select p from Trip p where p.id<?1 and p.userId =?2 order by p.id DESC",
+                Trip::class.java
+            ).let { it.setParameter(1, keysetId);it.setParameter(2, keysetId); it.setMaxResults(size) }.resultList
+        }
     }
 
     fun getTripById(id: Long): Trip? =
         tripRepository.findById(id).orElse(null)
-
-
-    fun GetFullTripDtoById(id: Long): FullTripDto = tripRepository.findById(id).get().let {
-        FullTripDto(
-            id,
-            it.userId,
-            portService.getPortById(it.departure!!),
-            portService.getPortById(it.destination!!),
-            boatService.getBoatById(it.boat!!)
-        )
-    }
-
 
 }

@@ -25,7 +25,7 @@ class BoatService(
         private val log = LoggerFactory.getLogger(BoatService::class.java)
     }
 
-    private var boats: MutableList<BoatDto> = mutableListOf()
+    protected var boats: MutableList<BoatDto> = mutableListOf()
 
     @Value("\${apiServiceAddress}")
     private lateinit var boatServiceAddress: String
@@ -76,7 +76,7 @@ class BoatService(
             }
     }
 
-    private fun fetchData() {
+    protected fun fetchData() {
 
         val uri = UriComponentsBuilder
             .fromUriString("http://${boatServiceAddress.trim()}/api/boat")
@@ -85,7 +85,7 @@ class BoatService(
     }
 
 
-    private fun fetchData(uri: URI) {
+    protected fun fetchData(uri: URI) {
         val response = cb.run(
             {
                 client.exchange(
@@ -121,19 +121,8 @@ class BoatService(
         }
     }
 
-    fun getBoatById(id: Long): BoatDto? {
-        verifyBoats()
-        return boats.firstOrNull { x -> x.id == id }
-    }
     fun boatExist(id: Long): Boolean {
         verifyBoats()
         return boats.any { x -> x.id == id }
     }
-
-    fun getBoatList(): List<BoatDto> {
-        verifyBoats()
-        return boats.toList()
-    }
-
-
 }

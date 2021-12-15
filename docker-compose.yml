@@ -36,6 +36,11 @@ services:
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
 
+  postgres-trip:
+    image: 'postgres:10'
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
   auth:
     build:
       context: ./auth
@@ -72,6 +77,15 @@ services:
       - api-gateway
       - redis
       - postgres-port
+
+  trip:
+    build:
+      context: ./trip
+      dockerfile: Dockerfile
+    depends_on:
+      - api-gateway
+      - redis
+      - postgres-trip
 
   frontend:
     build:
