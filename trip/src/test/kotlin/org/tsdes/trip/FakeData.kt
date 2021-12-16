@@ -4,17 +4,17 @@ import org.tsdes.dto.BoatDto
 import org.tsdes.dto.PortDto
 
 object FakeData {
-    fun getBoatDTO(): List<BoatDto> {
-
-        return MutableList(10) { index ->
-            BoatDto(index.toLong(), "Boat_$index", "ColorLine", index * 2,10,1)
+    fun getBoatDTO(): HashMap<Long, BoatDto> =
+        hashMapOf<Long, BoatDto>().apply {
+            (1..11).forEach { i ->
+                this.putIfAbsent(i.toLong(), BoatDto(i.toLong(), "Boat_$i", "ColorLine", i * 2, 10, 1))
+            }
         }
-    }
 
-    fun getPortDTO(): List<PortDto> {
-
-        return MutableList(10) { index ->
-            PortDto(index.toLong(), "Port_$index", "sunny")
+    fun getPortDTO(): HashMap<Long, PortDto> =
+        hashMapOf<Long, PortDto>().apply {
+            (1..11).forEach { i ->
+                this.putIfAbsent(i.toLong(), PortDto(i.toLong(), "Port_$i", "sunny"))
+            }
         }
-    }
 }

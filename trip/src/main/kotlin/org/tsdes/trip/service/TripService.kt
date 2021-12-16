@@ -1,5 +1,6 @@
 package org.tsdes.trip.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.tsdes.dto.TripDto
 import org.tsdes.trip.db.Trip
@@ -15,6 +16,7 @@ class TripService(
     private val portService: PortService,
     private val em: EntityManager
 ) {
+    private val log = LoggerFactory.getLogger(TripService::class.java)
     fun createTrip(tripDto: TripDto): Trip? =
         createTrip(
             tripDto.userId,
@@ -40,6 +42,12 @@ class TripService(
         )
             return tripRepository.save(Trip(0, userId, departure, destination, boat, passenger, status))
 
+        log.info(
+            "failed to create trip " +
+                    "validateBoat ${boatService.validateBoat(boat, passenger)} " +
+                    "departure ${portService.portExist(departure)} " +
+                    "destination ${portService.portExist(destination)} "
+        )
         return null
     }
 

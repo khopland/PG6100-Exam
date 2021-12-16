@@ -1,9 +1,8 @@
-package org.tsdes.boat
+package org.tsdes.boat.db
 
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
-import org.tsdes.boat.db.Boat
 import org.tsdes.dto.BoatDto
 import javax.persistence.EntityManager
 import javax.transaction.Transactional

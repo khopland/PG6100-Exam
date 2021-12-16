@@ -1,4 +1,4 @@
-package org.tsdes.boat
+package org.tsdes.boat.db
 
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component

@@ -3,6 +3,8 @@ package org.tsdes.port
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
+import org.springframework.amqp.core.TopicExchange
+import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.http.CacheControl
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -12,6 +14,8 @@ import org.tsdes.advanced.rest.dto.RestResponseFactory
 import org.tsdes.advanced.rest.dto.WrappedResponse
 import org.tsdes.dto.PortDto
 import org.tsdes.port.db.toDto
+import org.tsdes.port.service.PortService
+import org.tsdes.port.service.WeatherDto
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
@@ -22,7 +26,9 @@ import java.util.concurrent.TimeUnit
     produces = [(MediaType.APPLICATION_JSON_VALUE)]
 )
 class RestAPI(
-    private val portService: PortService
+    private val portService: PortService,
+    private val rabbit: RabbitTemplate,
+    private val topicExchange: TopicExchange
 ) {
 
     @GetMapping("/{portId}")
@@ -40,7 +46,7 @@ class RestAPI(
         @RequestBody dto: PortDto
     ): ResponseEntity<WrappedResponse<Void>> {
         val port = portService.registerNewPort(dto.name, dto.weather)
-        // Return path to the created Trip
+        rabbit.convertAndSend(topicExchange.name, "create", port.id)
         return RestResponseFactory.created(URI.create("api/port/${port.id}"))
     }
 
@@ -71,6 +77,7 @@ class RestAPI(
     ): ResponseEntity<WrappedResponse<Void>> {
         if (!portService.updateWhether(id, dto.weather!!))
             return RestResponseFactory.notFound("no port on this id $id")
+        rabbit.convertAndSend(topicExchange.name, "update", id)
         return RestResponseFactory.noPayload(204)
     }
 }

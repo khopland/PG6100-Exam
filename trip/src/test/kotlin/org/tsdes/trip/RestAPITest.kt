@@ -64,10 +64,10 @@ internal class RestAPITest @Autowired constructor(
             wiremockServer.start()
 
 
-            val boatDto = WrappedResponse(code = 200, data = PageDto(FakeData.getBoatDTO(), null)).validated()
+            val boatDto = WrappedResponse(code = 200, data = PageDto(FakeData.getBoatDTO().values.toList(), null)).validated()
             val boatJson = ObjectMapper().writeValueAsString(boatDto)
 
-            val portDto = WrappedResponse(code = 200, data = PageDto(FakeData.getPortDTO(), null)).validated()
+            val portDto = WrappedResponse(code = 200, data = PageDto(FakeData.getPortDTO().values.toList(), null)).validated()
             val portJson = ObjectMapper().writeValueAsString(portDto)
 
             wiremockServer.stubFor(
@@ -114,7 +114,7 @@ internal class RestAPITest @Autowired constructor(
     @Test
     fun testGetTrip() {
         val id = "foo"
-        val trip = tripService.createTrip(id, 0, 1, 0, 5,"Booked")
+        val trip = tripService.createTrip(id, 1, 2, 1, 5,"Booked")
         assert(trip != null)
         given().auth().basic(id, "123")
             .get("/${trip!!.id}").then().statusCode(200)
@@ -127,8 +127,8 @@ internal class RestAPITest @Autowired constructor(
         val tripId = given().auth().basic(id, "123").contentType(ContentType.JSON).body(
             """
             {
-              "boat": 0,
-              "departure": 0,
+              "boat": 1,
+              "departure": 2,
               "destination": 1,
               "passengers": 5,
               "status":"Booked",
@@ -147,20 +147,13 @@ internal class RestAPITest @Autowired constructor(
         given().auth().basic(id, "123").contentType(ContentType.JSON).body(
             """
             {
-              "boat": 0,
-              "departure": 0,
+              "boat": 1,
+              "departure": 2,
               "destination": 1,
               "passengers": 5,
               "status":"Booked",
               "userId": "$id+sss"
-            } {
-              "boat": 0,
-              "departure": 0,
-              "destination": 1,
-              "passengers": 5,
-              "status":"Booked",
-              "userId": "$id+sss"
-            }
+            } 
         """.trimIndent()
         ).post("/").then().statusCode(400)
         assertTrue(tripRepository.findByUserId(id).isEmpty())
@@ -183,12 +176,12 @@ internal class RestAPITest @Autowired constructor(
         val tripId = given().auth().basic(id, "123").contentType(ContentType.JSON).body(
             """
             {
-              "boat": 0,
-              "departure": 0,
+              "boat": 1,
+              "departure": 2,
               "destination": 1,
               "passengers": 5,
-              "userId": "$id",
-              "status":"Booked"
+              "status":"Booked",
+              "userId": "$id"
             }
         """.trimIndent()
         ).post("/").then().statusCode(201)

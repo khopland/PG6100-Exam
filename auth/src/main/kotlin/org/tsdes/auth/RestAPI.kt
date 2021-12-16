@@ -2,8 +2,6 @@ package org.tsdes.auth
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.amqp.core.FanoutExchange
-import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -25,9 +23,7 @@ import java.security.Principal
 class RestAPI(
     private val service: UserService,
     private val authenticationManager: AuthenticationManager,
-    private val userDetailsService: UserDetailsService,
-    private val rabbit: RabbitTemplate,
-    private val fanout: FanoutExchange
+    private val userDetailsService: UserDetailsService
 ) {
     val logger: Logger = LoggerFactory.getLogger(RestAPI::class.java)
 
@@ -57,8 +53,6 @@ class RestAPI(
         authenticationManager.authenticate(token)
 
         if (token.isAuthenticated) SecurityContextHolder.getContext().authentication = token
-
-        rabbit.convertAndSend(fanout.name, "", userId)
 
         logger.info("Created User[username=$userId]")
         return ResponseEntity.status(201).build()

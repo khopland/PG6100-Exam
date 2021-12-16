@@ -2,6 +2,7 @@ package org.tsdes.trip
 
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
+import org.slf4j.LoggerFactory
 import org.springframework.http.CacheControl
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -66,7 +67,6 @@ class RestAPI(
         val username = getUser() ?: return RestResponseFactory.noPayload(401)
         if (dto.userId != username)
             return RestResponseFactory.userFailure("userId in body is not your Id")
-
         val trip = tripService.createTrip(dto)
             ?: return RestResponseFactory.userFailure("cant find Boat or Port, or not right amount of passengers")
         return RestResponseFactory.created(URI.create("api/trip/${trip.id}"))

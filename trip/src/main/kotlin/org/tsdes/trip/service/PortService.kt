@@ -13,27 +13,30 @@ import org.tsdes.advanced.rest.dto.PageDto
 import org.tsdes.advanced.rest.dto.WrappedResponse
 import org.tsdes.dto.PortDto
 import java.net.URI
+import java.time.LocalDateTime
 import javax.annotation.PostConstruct
 import javax.transaction.Transactional
 
 @Service
 @Transactional
 class PortService(
+    private val client: RestTemplate,
     private val circuitBreakerFactory: Resilience4JCircuitBreakerFactory
 ) {
     companion object {
         private val log = LoggerFactory.getLogger(PortService::class.java)
     }
 
-    protected var ports: MutableList<PortDto> = mutableListOf()
+    protected var ports: HashMap<Long, PortDto> = HashMap()
 
     @Value("\${apiServiceAddress}")
     private lateinit var portServiceAddress: String
 
     private val lock = Any()
+    private var lastFetch: LocalDateTime = LocalDateTime.MIN
+
 
     private lateinit var cb: CircuitBreaker
-    private val client = RestTemplate()
 
     @PostConstruct
     fun init() {
@@ -47,7 +50,18 @@ class PortService(
         }
     }
 
-    fun UpdateOnePort(id: Long) {
+    fun updateOnePort(id: Long) {
+        val port = getAPort(id) ?: return
+        ports[id] = port
+    }
+
+    fun getNewOnePort(id: Long) {
+        val port = getAPort(id) ?: return
+        ports.putIfAbsent(id, port)
+    }
+
+
+    private fun getAPort(id: Long): PortDto? {
         val uri = UriComponentsBuilder
             .fromUriString("http://${portServiceAddress.trim()}/api/port/$id")
             .build().toUri()
@@ -63,17 +77,16 @@ class PortService(
                 log.error("Failed to fetch data from Port Service: ${it.message}")
                 null
             }
-        ) ?: return
+        ) ?: return null
         if (response.statusCodeValue != 200) log.error(
             "Error in fetching data from Port Service. Status ${response.statusCodeValue}. Message:${response.body?.message}"
         ) else
             try {
-                val index = ports.indexOfFirst { x -> x.id == id }
-                ports[index] = response.body!!.data!!
-
+                return response.body!!.data!!
             } catch (e: Exception) {
                 log.error("Failed to parse Port info: ${e.message}")
             }
+        return null
     }
 
     protected fun fetchData() {
@@ -108,7 +121,9 @@ class PortService(
                         UriComponentsBuilder.fromUriString("http://${portServiceAddress.trim()}${response.body!!.data!!.next!!}")
                             .build().toUri()
                     )
-                ports.addAll(response.body!!.data!!.list)
+                response.body!!.data!!.list.forEach { ports[it.id!!] = it }
+                log.info("ports count ${ports.count()}")
+                lastFetch = LocalDateTime.now()
             } catch (e: Exception) {
                 log.error("Failed to parse Port collection info: ${e.message}")
             }
@@ -126,6 +141,8 @@ class PortService(
 
     fun portExist(id: Long): Boolean {
         verifyPorts()
-        return ports.any { x -> x.id == id }
+        if (lastFetch.plusMinutes(1).isBefore(LocalDateTime.now()))
+            synchronized(lock) { fetchData() }
+        return ports[id] != null
     }
 }

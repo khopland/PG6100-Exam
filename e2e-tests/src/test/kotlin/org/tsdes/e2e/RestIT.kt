@@ -31,7 +31,7 @@ class RestIT {
 
         @Container
         @JvmField
-        val env: KDockerComposeContainer = KDockerComposeContainer("exam", File("../docker-compose.yml"))
+        val env: KDockerComposeContainer = KDockerComposeContainer("end2end", File("../docker-compose.yml"))
             .withExposedService(
                 "discovery", 8500,
                 Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(300))
@@ -193,12 +193,12 @@ class RestIT {
     }
 
     @Test
-    fun testCreateAUserAndATrip() {
+    fun testCreateATrip() {
         Awaitility.await().atMost(120, TimeUnit.SECONDS)
             .pollInterval(Duration.ofSeconds(10))
             .ignoreExceptions()
             .until {
-                val id = "testUser" + System.currentTimeMillis()
+                val id = "testUser_" + System.currentTimeMillis()
                 val password = "123456"
 
                 val cookie = createUser(id, password)
@@ -212,12 +212,12 @@ class RestIT {
                 val tripId = given().cookie("SESSION", cookie).contentType(ContentType.JSON).body(
                     """
                      {
-                      "boat": 1,
-                      "departure": 1,
-                      "destination": 2,
-                      "passengers": 5,
-                      "status":"Booked",
-                      "userId": "$id"
+                        "boat": 1,
+                        "departure": 1,
+                        "destination": 2,
+                        "passengers": 5,
+                        "status": "Booked",
+                        "userId": "$id"
                     }
                 """.trimIndent()
                 )
@@ -230,14 +230,17 @@ class RestIT {
                     .then()
                     .statusCode(200)
                     .body("data.list.size()", Matchers.equalTo(1))
+
                 given().cookie("SESSION", cookie)
                     .get("/api/trips/$tripId")
                     .then()
                     .statusCode(200)
+
                 given().cookie("SESSION", cookie)
                     .delete("/api/trips/$tripId")
                     .then()
                     .statusCode(204)
+
                 given().cookie("SESSION", cookie)
                     .get("/api/trips/$tripId")
                     .then()

@@ -1,7 +1,9 @@
-package org.tsdes.port
+package org.tsdes.port.db
 
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
+import org.tsdes.port.service.PortRepository
+import org.tsdes.port.service.PortService
 
 @Component
 class InitialDataLoader(

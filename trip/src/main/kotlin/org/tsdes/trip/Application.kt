@@ -15,9 +15,10 @@ import springfox.documentation.spring.web.plugins.Docket
 class Application {
     @LoadBalanced
     @Bean
-    fun loadBalancedClient() : RestTemplate {
-        return RestTemplate()
-    }
+    fun loadBalancedClient(): RestTemplate =
+        RestTemplate()
+
+
     @Bean
     fun swaggerApi(): Docket {
         return Docket(DocumentationType.OAS_30)
