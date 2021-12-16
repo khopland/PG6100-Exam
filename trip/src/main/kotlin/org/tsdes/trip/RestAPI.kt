@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit
 @RestController
 class RestAPI(
     private val tripService: TripService,
-    private val rabbit:RabbitTemplate,
+    private val rabbit: RabbitTemplate,
     private val fanoutExchange: FanoutExchange
 ) {
 
@@ -36,24 +36,19 @@ class RestAPI(
     fun getTrip(
         @PathVariable("tripId") tripId: Long
     ): ResponseEntity<WrappedResponse<TripDto>> {
-        val username = getUser() ?: return RestResponseFactory.noPayload(401)
-
         val trip = tripService.getTripById(tripId) ?: return RestResponseFactory.notFound("no trip with id = $tripId")
-        if (trip.userId != username) return RestResponseFactory.noPayload(403)
         return RestResponseFactory.payload(200, trip.toDto())
     }
 
-    @ApiOperation("get all trip for the user")
+    @ApiOperation("get all trip")
     @GetMapping
     fun getAllTripsByUser(
         @RequestParam("keysetId", required = false)
         keysetId: Long?
     ): ResponseEntity<WrappedResponse<PageDto<TripDto>>> {
-        val username = getUser() ?: return RestResponseFactory.noPayload(401)
-
         val amount = 10
         val page = PageDto<TripDto>().apply {
-            list = tripService.getNextPage(username, amount, keysetId).map { it.toDto() }
+            list = tripService.getNextPage(amount, keysetId).map { it.toDto() }
         }
         if (page.list.size == amount)
             page.next = "/api/trips?keysetId=${page.list.last().id}"
@@ -73,7 +68,7 @@ class RestAPI(
             return RestResponseFactory.userFailure("userId in body is not your Id")
         val trip = tripService.createTrip(dto)
             ?: return RestResponseFactory.userFailure("cant find Boat or Port, or not right amount of passengers")
-        rabbit.convertAndSend(fanoutExchange.name,"",trip.id)
+        rabbit.convertAndSend(fanoutExchange.name, "", trip.id)
         return RestResponseFactory.created(URI.create("api/trip/${trip.id}"))
 
     }
@@ -85,19 +80,25 @@ class RestAPI(
     ): ResponseEntity<WrappedResponse<Void>> {
         val username = getUser() ?: return RestResponseFactory.noPayload(401)
 
-        if (!tripService.deleteTrip(tripId,username)) return RestResponseFactory.notFound("no trip on id = $tripId")
+        if (!tripService.deleteTrip(tripId, username)) return RestResponseFactory.notFound("no trip on id = $tripId")
         return RestResponseFactory.noPayload(204)
 
     }
+
     @ApiOperation("update status")
     @PatchMapping("/{tripId}")
     fun updateStatus(
         @PathVariable("tripId") tripId: Long,
-        @RequestBody dto:StatusCommandDto
+        @RequestBody dto: StatusCommandDto
     ): ResponseEntity<WrappedResponse<Void>> {
         val username = getUser() ?: return RestResponseFactory.noPayload(401)
 
-        if (!tripService.updateStatus(tripId,username,dto.status)) return RestResponseFactory.notFound("no trip on id = $tripId")
+        if (!tripService.updateStatus(
+                tripId,
+                username,
+                dto.status
+            )
+        ) return RestResponseFactory.notFound("no trip on id = $tripId")
         return RestResponseFactory.noPayload(204)
 
     }

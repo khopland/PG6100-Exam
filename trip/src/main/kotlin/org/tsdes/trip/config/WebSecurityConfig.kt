@@ -1,6 +1,7 @@
 package org.tsdes.trip.config
 
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
@@ -16,6 +17,8 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
         }.and()
             .authorizeRequests()
             .antMatchers("/swagger*/**", "/v3/api-docs", "/actuator/**").permitAll()
+            .antMatchers(HttpMethod.GET,"/api/trips*/**").permitAll()
+            .antMatchers(HttpMethod.HEAD,"/api/trips*/**").permitAll()
             .antMatchers("/api/trips*/**").hasRole("USER")
             .anyRequest().denyAll()
             .and()

@@ -17,7 +17,6 @@ class InitialDataLoader(
 
     private fun createDefaultData() {
         if (repo.count() == 0L) {
-            service.registerNewPort("Yamaha_Motor_Corporation", "Batty")
             service.registerNewPort("Oslo", "Snow")
             service.registerNewPort("Bergen", "Rain")
             service.registerNewPort("Trondheim", "Snow")

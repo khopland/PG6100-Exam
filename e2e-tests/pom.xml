@@ -44,6 +44,11 @@
             <artifactId>boat</artifactId>
             <version>${project.version}</version>
         </dependency>
+      <dependency>
+            <groupId>org.tsdes</groupId>
+            <artifactId>trip</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
 
 

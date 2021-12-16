@@ -6,19 +6,25 @@ import { userContext } from "../context/userContext";
 import { useContext } from "react";
 
 export const NavBar = () => {
-  const { user, isAdmin } = useContext(userContext);
+  const { user } = useContext(userContext);
   return (
     <Navbar bg="dark" variant="dark">
       <Container>
         <Navbar.Brand as={Link} to="/">
-          game
+          boat navigation
         </Navbar.Brand>
         <Nav>
           <Nav.Link as={Link} to="/">
             home
           </Nav.Link>
+          <Nav.Link as={Link} to="trips">
+            trips
+          </Nav.Link>
           {user ? (
             <>
+              <Nav.Link as={Link} to="create">
+                create Trip
+              </Nav.Link>
               <Nav.Link as={Link} to="logout">
                 logout
               </Nav.Link>
@@ -32,12 +38,6 @@ export const NavBar = () => {
                 Login
               </Nav.Link>
             </>
-          )}
-
-          {isAdmin() && (
-            <Nav.Link as={Link} to="admin">
-              Admin
-            </Nav.Link>
           )}
         </Nav>
       </Container>

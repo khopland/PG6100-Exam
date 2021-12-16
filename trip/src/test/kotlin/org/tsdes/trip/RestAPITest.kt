@@ -118,7 +118,6 @@ internal class RestAPITest @Autowired constructor(
     fun testAccessControl() {
         val id = 0
 
-        given().get("/$id").then().statusCode(401)
         given().post("/$id").then().statusCode(401)
         given().patch("/$id").then().statusCode(401)
         given().delete("/$id").then().statusCode(401)

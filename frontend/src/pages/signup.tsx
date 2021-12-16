@@ -19,17 +19,17 @@ export const Signup = () => {
     );
   }
 
-  async function handleSubmit(event: any) {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
     if (await singUp(username, password)) {
-      console.log("singed up");
+      console.log("signed up");
       await refresh();
-      navigate("/", { replace: true });
+      navigate("/");
     }
-  }
+  };
 
   return (
-    <Container className="Login" style={{ padding: "60px 0" }}>
+    <Container className="signIn" style={{ padding: "60px 0" }}>
       <Form onSubmit={handleSubmit}>
         <Form.Group
           style={{ margin: "0 auto", maxWidth: "320px" }}

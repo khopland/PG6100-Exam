@@ -31,10 +31,10 @@ class PortService(
 
         else -> when (keysetId) {
             null -> em.createQuery(
-                "select p from Port p order by p.id DESC", Port::class.java
+                "select p from Port p order by p.id ASC", Port::class.java
             ).apply { maxResults = size }.resultList
             else -> em.createQuery(
-                "select p from Port p where p.id<?1 order by p.id DESC,p.name DESC", Port::class.java
+                "select p from Port p where p.id>?1 order by p.id ASC", Port::class.java
             ).setParameter(1, keysetId).apply { maxResults = size }.resultList
         }
     }

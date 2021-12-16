@@ -40,11 +40,11 @@ class BoatService(
 
         else -> when (keysetId) {
             null -> em.createQuery(
-                "select p from Boat p order by p.id DESC",
+                "select p from Boat p order by p.id ASC ",
                 Boat::class.java
             ).apply { maxResults = size }.resultList
             else -> em.createQuery(
-                "select p from Boat p where p.id<?1 order by p.id DESC,p.name DESC",
+                "select p from Boat p where p.id>?1 order by p.id ASC",
                 Boat::class.java
             ).setParameter(1, keysetId).apply { maxResults = size }.resultList
         }

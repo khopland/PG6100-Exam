@@ -1,15 +1,12 @@
 import axios from "axios";
-import { IUser } from "../context/userContext";
+import IUser from "../inteface/IUser";
 
 export const getUser = async () => {
   try {
     const res = await axios.get("/api/auth/user", { withCredentials: true });
     if (res.status === 200) return res.data as IUser;
-    return null;
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
+  } catch (e) {}
+  return null;
 };
 export const login = async (userId: string, password: string) => {
   try {
@@ -37,7 +34,7 @@ export const singUp = async (userId: string, password: string) => {
       },
       { withCredentials: true }
     );
-    return res.status === 204;
+    return res.status === 201;
   } catch (e) {
     console.error(e);
     return false;
@@ -45,7 +42,7 @@ export const singUp = async (userId: string, password: string) => {
 };
 export const logOut = async () => {
   try {
-    const res = await axios.get("/api/auth/logout");
+    const res = await axios.get("/api/auth/logout", { withCredentials: true });
     return res.status === 204;
   } catch (e) {
     console.error(e);

@@ -31,7 +31,7 @@ class RestIT {
 
         @Container
         @JvmField
-        val env: KDockerComposeContainer = KDockerComposeContainer("end2end", File("../docker-compose.yml"))
+        val env: KDockerComposeContainer = KDockerComposeContainer("eksamen", File("../docker-compose.yml"))
             .withExposedService(
                 "discovery", 8500,
                 Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(300))
@@ -154,17 +154,11 @@ class RestIT {
                 val id = "testUser" + System.currentTimeMillis()
                 val password = "123456"
 
-                val cookie = createUser(id, password)
+                createUser(id, password)
 
                 given().get("/api/trips")
                     .then()
-                    .statusCode(401)
-                given().cookie("SESSION", cookie)
-                    .get("/api/trips")
-                    .then()
                     .statusCode(200)
-                    .body("data.list.size()", Matchers.equalTo(0))
-
                 true
             }
     }
@@ -183,7 +177,7 @@ class RestIT {
                     .get("/api/trips")
                     .then()
                     .statusCode(200)
-                    .body("data.list.size()", Matchers.equalTo(1))
+                    .body("data.list.size()", Matchers.greaterThan(0))
                 given().cookie("SESSION", cookie)
                     .get("/api/trips/1")
                     .then()
@@ -202,13 +196,6 @@ class RestIT {
                 val password = "123456"
 
                 val cookie = createUser(id, password)
-
-                given().cookie("SESSION", cookie)
-                    .get("/api/trips")
-                    .then()
-                    .statusCode(200)
-                    .body("data.list.size()", Matchers.equalTo(0))
-
                 val tripId = given().cookie("SESSION", cookie).contentType(ContentType.JSON).body(
                     """
                      {
@@ -224,12 +211,6 @@ class RestIT {
                     .post("/api/trips")
                     .then()
                     .statusCode(201).extract().header("Location").split('/').last()
-
-                given().cookie("SESSION", cookie)
-                    .get("/api/trips")
-                    .then()
-                    .statusCode(200)
-                    .body("data.list.size()", Matchers.equalTo(1))
 
                 given().cookie("SESSION", cookie)
                     .get("/api/trips/$tripId")

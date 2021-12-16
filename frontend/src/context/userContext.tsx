@@ -1,10 +1,7 @@
 import { createContext, FC, useEffect, useState } from "react";
 import { getUser } from "../service/userService";
+import IUser from "../inteface/IUser";
 
-export type IUser = {
-  name: string;
-  roles: string[];
-};
 type IUserContext = {
   user: IUser | null;
   isAdmin: () => boolean;

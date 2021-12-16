@@ -70,10 +70,10 @@ internal class TripServiceTest @Autowired constructor(
         val n = 5
         for (i in 0 until n)
             assertNotNull(tripService.createTrip("foo", 1, 2, 1, 5, Status.BOOKED))
-        val page = tripService.getNextPage("foo", n)
+        val page = tripService.getNextPage( n)
         assertEquals(n, page.size)
         for (i in 0 until n - 1)
-            assertTrue(page[i].id >= page[i + 1].id)
+            assertTrue(page[i].id <= page[i + 1].id)
     }
 
     @Test

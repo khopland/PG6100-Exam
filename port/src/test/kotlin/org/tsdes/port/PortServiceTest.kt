@@ -54,7 +54,7 @@ class PortServiceTest @Autowired constructor(
         val page = service.getNextPage(n)
         assertEquals(n, page.size)
         for (i in 0 until n - 1)
-            assertTrue(page[i].id >= page[i + 1].id)
+            assertTrue(page[i].id <= page[i + 1].id)
     }
 
 }

@@ -59,18 +59,18 @@ class TripService(
     }
 
 
-    fun getNextPage(userId: String, size: Int, keysetId: Long? = null): List<Trip> = when {
+    fun getNextPage(size: Int, keysetId: Long? = null): List<Trip> = when {
         size < 1 || size > 1000 -> throw IllegalArgumentException("Invalid size value: $size")
 
         else -> when (keysetId) {
             null -> em.createQuery(
-                "select t from Trip t where t.userId =?1 order by t.id DESC",
+                "select t from Trip t order by t.id ASC",
                 Trip::class.java
-            ).setParameter(1, userId).apply { maxResults = size }.resultList
+            ).apply { maxResults = size }.resultList
             else -> em.createQuery(
-                "select p from Trip p where p.id<?1 and p.userId =?2 order by p.id DESC",
+                "select p from Trip p where p.id>?1 order by p.id ASC",
                 Trip::class.java
-            ).let { it.setParameter(1, keysetId);it.setParameter(2, userId); it.setMaxResults(size) }.resultList
+            ).let { it.setParameter(1, keysetId); it.setMaxResults(size) }.resultList
         }
     }
 
@@ -88,5 +88,6 @@ class TripService(
         tripRepository.save(trip.apply { this.status = status })
         return true
     }
+
 
 }
