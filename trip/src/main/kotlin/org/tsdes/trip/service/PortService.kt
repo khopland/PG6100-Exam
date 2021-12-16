@@ -50,9 +50,12 @@ class PortService(
         }
     }
 
-    fun updateOnePort(id: Long) {
-        val port = getAPort(id) ?: return
+    fun updateOnePort(id: Long): Long? {
+        val port = getAPort(id) ?: return null
         ports[id] = port
+        if (port.weather.lowercase() == "storm")
+            return port.id
+        return null
     }
 
     fun getNewOnePort(id: Long) {

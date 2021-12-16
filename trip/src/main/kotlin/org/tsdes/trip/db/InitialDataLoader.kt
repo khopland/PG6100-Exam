@@ -2,6 +2,7 @@ package org.tsdes.trip.db
 
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
+import org.tsdes.dto.Status
 
 @Component
 class InitialDataLoader(
@@ -14,7 +15,7 @@ class InitialDataLoader(
 
     private fun createDefaultData() {
         if (repo.count() == 0L) {
-            repo.save(Trip(0, "admin", 1L, 1L, 2L, 5, "Booked"))
+            repo.save(Trip(0, "admin", 1L, 1L, 2L, 5, Status.BOOKED))
         }
     }
 }

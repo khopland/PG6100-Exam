@@ -2,7 +2,8 @@ package org.tsdes.trip
 
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
-import org.slf4j.LoggerFactory
+import org.springframework.amqp.core.FanoutExchange
+import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.http.CacheControl
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -13,6 +14,7 @@ import org.tsdes.advanced.rest.dto.PageDto
 import org.tsdes.advanced.rest.dto.RestResponseFactory
 import org.tsdes.advanced.rest.dto.WrappedResponse
 import org.tsdes.dto.TripDto
+import org.tsdes.trip.dto.StatusCommandDto
 import org.tsdes.trip.service.TripService
 import java.net.URI
 import java.util.concurrent.TimeUnit
@@ -24,7 +26,9 @@ import java.util.concurrent.TimeUnit
 )
 @RestController
 class RestAPI(
-    private val tripService: TripService
+    private val tripService: TripService,
+    private val rabbit:RabbitTemplate,
+    private val fanoutExchange: FanoutExchange
 ) {
 
     @ApiOperation("get a trip by an id")
@@ -69,6 +73,7 @@ class RestAPI(
             return RestResponseFactory.userFailure("userId in body is not your Id")
         val trip = tripService.createTrip(dto)
             ?: return RestResponseFactory.userFailure("cant find Boat or Port, or not right amount of passengers")
+        rabbit.convertAndSend(fanoutExchange.name,"",trip.id)
         return RestResponseFactory.created(URI.create("api/trip/${trip.id}"))
 
     }
@@ -81,6 +86,18 @@ class RestAPI(
         val username = getUser() ?: return RestResponseFactory.noPayload(401)
 
         if (!tripService.deleteTrip(tripId,username)) return RestResponseFactory.notFound("no trip on id = $tripId")
+        return RestResponseFactory.noPayload(204)
+
+    }
+    @ApiOperation("update status")
+    @PatchMapping("/{tripId}")
+    fun updateStatus(
+        @PathVariable("tripId") tripId: Long,
+        @RequestBody dto:StatusCommandDto
+    ): ResponseEntity<WrappedResponse<Void>> {
+        val username = getUser() ?: return RestResponseFactory.noPayload(401)
+
+        if (!tripService.updateStatus(tripId,username,dto.status)) return RestResponseFactory.notFound("no trip on id = $tripId")
         return RestResponseFactory.noPayload(204)
 
     }

@@ -1,9 +1,6 @@
 package org.tsdes.trip.config
 
-import org.springframework.amqp.core.Binding
-import org.springframework.amqp.core.BindingBuilder
-import org.springframework.amqp.core.Queue
-import org.springframework.amqp.core.TopicExchange
+import org.springframework.amqp.core.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -15,6 +12,8 @@ class RabbitMq {
 
     @Bean
     fun topicPort(): TopicExchange = TopicExchange("port")
+    @Bean
+    fun topicTrip(): FanoutExchange = FanoutExchange("trip")
 
     @Bean
     fun queueBoatCreate(): Queue = Queue("boat-create")

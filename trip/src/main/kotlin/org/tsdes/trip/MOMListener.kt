@@ -5,11 +5,13 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Service
 import org.tsdes.trip.service.BoatService
 import org.tsdes.trip.service.PortService
+import org.tsdes.trip.service.TripService
 
 @Service
 class MOMListener(
     private val boatService: BoatService,
-    private val portService: PortService
+    private val portService: PortService,
+    private val tripService: TripService
 ) {
     companion object {
         private val log = LoggerFactory.getLogger(MOMListener::class.java)
@@ -30,7 +32,9 @@ class MOMListener(
     @RabbitListener(queues = ["#{queuePortUpdate.name}"])
     fun portUpdate(msg: Long) {
         log.info("updating port with id $msg")
-        portService.updateOnePort(msg)
+        val portId =portService.updateOnePort(msg)
+        if (portId != null)
+            tripService.updateOnWeather(portId)
     }
 
     @RabbitListener(queues = ["#{queuePortCreate.name}"])

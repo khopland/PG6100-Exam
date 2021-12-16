@@ -2,6 +2,7 @@ package org.tsdes.trip.service
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.tsdes.dto.Status
 import org.tsdes.dto.TripDto
 import org.tsdes.trip.db.Trip
 import org.tsdes.trip.db.TripRepository
@@ -33,7 +34,7 @@ class TripService(
         destination: Long,
         boat: Long,
         passenger: Int,
-        status: String
+        status: Status
     ): Trip? {
         if (
             boatService.validateBoat(boat, passenger) &&
@@ -75,5 +76,17 @@ class TripService(
 
     fun getTripById(id: Long): Trip? =
         tripRepository.findById(id).orElse(null)
+
+    fun updateOnWeather(portId: Long) {
+        tripRepository.findByDestinationId(portId).filter { it.status == Status.ONGOING }
+            .forEach { tripRepository.save(it.apply { this.status = Status.CANSCELLD }) }
+    }
+
+    fun updateStatus(tripId: Long, username: String, status: Status): Boolean {
+        val trip = tripRepository.findById(tripId).orElseGet(null) ?: return false
+        if (trip.userId != username) return false
+        tripRepository.save(trip.apply { this.status = status })
+        return true
+    }
 
 }

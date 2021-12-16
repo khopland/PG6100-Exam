@@ -1,5 +1,6 @@
 package org.tsdes.trip.db
 
+import org.tsdes.dto.Status
 import org.tsdes.dto.TripDto
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -29,8 +30,8 @@ class Trip(
 
     @get:Min(1)
     var passengers: Int = 0 ,
-    @get:NotBlank
-    var status: String = ""
+
+    var status: Status = Status.BOOKED
 ) {
     fun toDto(): TripDto = TripDto(id, userId, departure, destination, boat, passengers,status)
 }

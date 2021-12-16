@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository
 interface TripRepository : CrudRepository<Trip, Long>{
     @Query("select t from Trip t where t.userId = :id order by t.id DESC")
     fun findByUserId(@Param("id") userId: String): List<Trip>
+
+    @Query("select t from Trip t where t.destination = :id order by t.id DESC")
+    fun findByDestinationId(@Param("id") DestinationId: Long): List<Trip>
 }

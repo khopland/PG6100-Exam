@@ -24,14 +24,19 @@ import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.testcontainers.containers.GenericContainer
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
 import org.tsdes.advanced.rest.dto.PageDto
 import org.tsdes.advanced.rest.dto.WrappedResponse
+import org.tsdes.dto.Status
 import org.tsdes.trip.db.TripRepository
 import org.tsdes.trip.service.TripService
 import wiremock.com.fasterxml.jackson.databind.ObjectMapper
 import javax.annotation.PostConstruct
 
 @ActiveProfiles("RestAPITest", "test")
+@Testcontainers
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(initializers = [(RestAPITest.Companion.Initializer::class)])
@@ -56,6 +61,12 @@ internal class RestAPITest @Autowired constructor(
     companion object {
         private lateinit var wiremockServer: WireMockServer
 
+        class KGenericContainer(imageName: String) : GenericContainer<KGenericContainer>(imageName)
+
+        @Container
+        @JvmField
+        val rabbitMQ = KGenericContainer("rabbitmq:3").withExposedPorts(5672)!!
+
         @BeforeAll
         @JvmStatic
         fun initClass() {
@@ -64,10 +75,12 @@ internal class RestAPITest @Autowired constructor(
             wiremockServer.start()
 
 
-            val boatDto = WrappedResponse(code = 200, data = PageDto(FakeData.getBoatDTO().values.toList(), null)).validated()
+            val boatDto =
+                WrappedResponse(code = 200, data = PageDto(FakeData.getBoatDTO().values.toList(), null)).validated()
             val boatJson = ObjectMapper().writeValueAsString(boatDto)
 
-            val portDto = WrappedResponse(code = 200, data = PageDto(FakeData.getPortDTO().values.toList(), null)).validated()
+            val portDto =
+                WrappedResponse(code = 200, data = PageDto(FakeData.getPortDTO().values.toList(), null)).validated()
             val portJson = ObjectMapper().writeValueAsString(portDto)
 
             wiremockServer.stubFor(
@@ -92,8 +105,11 @@ internal class RestAPITest @Autowired constructor(
 
         class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
             override fun initialize(configurableApplicationContext: ConfigurableApplicationContext) {
-                TestPropertyValues.of("apiServiceAddress: localhost:${wiremockServer.port()}")
-                    .applyTo(configurableApplicationContext.environment)
+                TestPropertyValues.of(
+                    "apiServiceAddress: localhost:${wiremockServer.port()}",
+                    "spring.rabbitmq.host=" + rabbitMQ.containerIpAddress,
+                    "spring.rabbitmq.port=" + rabbitMQ.getMappedPort(5672)
+                ).applyTo(configurableApplicationContext.environment)
             }
         }
     }
@@ -114,7 +130,7 @@ internal class RestAPITest @Autowired constructor(
     @Test
     fun testGetTrip() {
         val id = "foo"
-        val trip = tripService.createTrip(id, 1, 2, 1, 5,"Booked")
+        val trip = tripService.createTrip(id, 1, 2, 1, 5, Status.BOOKED)
         assert(trip != null)
         given().auth().basic(id, "123")
             .get("/${trip!!.id}").then().statusCode(200)
@@ -131,7 +147,7 @@ internal class RestAPITest @Autowired constructor(
               "departure": 2,
               "destination": 1,
               "passengers": 5,
-              "status":"Booked",
+              "status": 0,
               "userId": "$id"
             }
         """.trimIndent()
@@ -151,7 +167,7 @@ internal class RestAPITest @Autowired constructor(
               "departure": 2,
               "destination": 1,
               "passengers": 5,
-              "status":"Booked",
+              "status": 0,
               "userId": "$id+sss"
             } 
         """.trimIndent()
@@ -180,7 +196,7 @@ internal class RestAPITest @Autowired constructor(
               "departure": 2,
               "destination": 1,
               "passengers": 5,
-              "status":"Booked",
+              "status": 0,
               "userId": "$id"
             }
         """.trimIndent()
@@ -190,6 +206,31 @@ internal class RestAPITest @Autowired constructor(
 
         given().auth().basic(id, "123").delete("/$tripId").then().statusCode(204)
         assertFalse(tripRepository.existsById(tripId.toLong()))
+
+    }
+
+    @Test
+    fun testChangeStatusYourTrips() {
+        val id = "foo"
+
+        val tripId = given().auth().basic(id, "123").contentType(ContentType.JSON).body(
+            """
+            {
+              "boat": 1,
+              "departure": 2,
+              "destination": 1,
+              "passengers": 5,
+              "status": 0,
+              "userId": "$id"
+            }
+        """.trimIndent()
+        ).post("/").then().statusCode(201)
+            .extract().header("location").split("/").last()
+        assertTrue(tripRepository.existsById(tripId.toLong()))
+
+        given().auth().basic(id, "123").contentType(ContentType.JSON).body("""{"status": 1}""".trimIndent())
+            .patch("/$tripId").then().statusCode(204)
+        assertTrue(tripRepository.findById(tripId.toLong()).get().status ==Status.ONGOING)
 
     }
 

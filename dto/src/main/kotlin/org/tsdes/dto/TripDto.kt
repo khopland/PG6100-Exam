@@ -22,5 +22,5 @@ class TripDto(
     var passengers: Int = 0,
 
     @get:ApiModelProperty("The status of the Trip")
-    var status: String = "",
+    var status: Status = Status.BOOKED,
 )

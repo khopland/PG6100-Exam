@@ -216,7 +216,7 @@ class RestIT {
                         "departure": 1,
                         "destination": 2,
                         "passengers": 5,
-                        "status": "Booked",
+                        "status": 0,
                         "userId": "$id"
                     }
                 """.trimIndent()
