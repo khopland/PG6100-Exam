@@ -236,6 +236,11 @@ class RestIT {
                     .then()
                     .statusCode(200)
 
+                given().cookie("SESSION", cookie).contentType(ContentType.JSON).body("""{"status": 1}""".trimIndent())
+                    .patch("/api/trips/$tripId")
+                    .then()
+                    .statusCode(204)
+
                 given().cookie("SESSION", cookie)
                     .delete("/api/trips/$tripId")
                     .then()
