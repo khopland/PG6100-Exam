@@ -9,6 +9,7 @@
     "start": "npm start --prefix server",
     "watch:client": "vite build --watch",
     "watch:server": "npm run dev --prefix server",
+    "install:server": "cd ./server && npm install",
     "format": "prettier --write ."
   },
   "dependencies": {

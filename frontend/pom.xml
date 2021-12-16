@@ -40,9 +40,8 @@
                         <configuration>
                             <executable>npm</executable>
                             <arguments>
-                                <argument>install</argument>
-                                <argument>--prefix</argument>
-                                <argument>server</argument>
+                                <argument>run</argument>
+                                <argument>install:server</argument>
                             </arguments>
                         </configuration>
                     </execution>
