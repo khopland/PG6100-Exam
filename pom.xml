@@ -37,7 +37,7 @@
         <version.jacoco>0.8.5</version.jacoco>
 
         <!-- DB versions -->
-        <version.h2>1.4.197</version.h2>
+        <version.h2>2.0.202</version.h2>
         <version.postgres>42.1.4</version.postgres>
 
         <!-- Testing -->
