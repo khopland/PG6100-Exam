@@ -41,7 +41,7 @@ class RestIT {
             .withLogConsumer("boat_0") { print("[boat_0] " + it.utf8String) }
             .withLogConsumer("boat_1") { print("[boat_1] " + it.utf8String) }
             .withLogConsumer("trip") { print("[trip] " + it.utf8String) }
-
+            .withOptions("--compatibility")
             .withLocalCompose(true)
 
         @BeforeAll
