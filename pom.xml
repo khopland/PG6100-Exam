@@ -36,7 +36,7 @@
         <version.junit.platform>1.6.2</version.junit.platform>
 
         <!-- DB versions -->
-        <version.h2>1.4.197</version.h2>
+        <version.h2>2.1.210</version.h2>
         <version.postgres>42.2.25</version.postgres>
 
         <!-- Testing -->
