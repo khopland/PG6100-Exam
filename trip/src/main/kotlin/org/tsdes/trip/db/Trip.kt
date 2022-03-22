@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull
 @Entity
 class Trip(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     var id: Long = 0,
 
     @get:NotBlank

@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank
 @Entity
 class Boat(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     var id: Long = 0,
     @get:NotBlank(message = "Boat must have a name")
     var name: String = "",

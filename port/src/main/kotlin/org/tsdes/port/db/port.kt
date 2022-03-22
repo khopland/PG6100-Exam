@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank
 @Entity
 class Port(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     var id: Long = 0,
     @get:NotBlank(message = "port must have a name")
     var name: String = "",
