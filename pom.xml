@@ -37,7 +37,7 @@
 
         <!-- DB versions -->
         <version.h2>2.1.210</version.h2>
-        <version.postgres>42.3.3</version.postgres>
+        <version.postgres>42.4.1</version.postgres>
 
         <!-- Testing -->
         <version.restassured>4.2.0</version.restassured>
