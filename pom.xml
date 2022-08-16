@@ -28,7 +28,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <fs>${file.separator}</fs>
         <version.java>11</version.java>
-        <kotlin.version>1.5.31</kotlin.version>
+        <kotlin.version>1.6.0</kotlin.version>
         <version.springcloud>2020.0.4</version.springcloud>
         <springboot.version>2.5.5</springboot.version>
         <springfox.version>3.0.0</springfox.version>
@@ -37,7 +37,7 @@
 
         <!-- DB versions -->
         <version.h2>2.1.210</version.h2>
-        <version.postgres>42.3.3</version.postgres>
+        <version.postgres>42.4.1</version.postgres>
 
         <!-- Testing -->
         <version.restassured>4.2.0</version.restassured>
