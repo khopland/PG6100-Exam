@@ -1,5 +1,6 @@
 > [PG6100 - Enterpriseprogrammering 2](https://old.kristiania.no/emnebeskrivelse-2-2/?kode=PG6102&arstall=2021&terminkode=H%C3%98ST&v=1) | [Oppgavetekst](./docs/2021-12_exam.pdf) | [Course Repository](https://github.com/arcuri82/testing_security_development_enterprise_systems)
 
+
 # pg6100-exam
 
 ## Modules
